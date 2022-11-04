@@ -1,15 +1,9 @@
-#include<iostream>
-#include "BigReal.hpp"
+#include <iostream>
+#include "BigReal.h"
 #include "BigDecimalIntClass.h"
-using namespace std ;
 
-
-int main(){
-	BigDecimalInt rr("-5643564");
-	BigReal x("-34245343.45543545454")  , e  ,a(rr);
-	BigReal g(x);
-	e =x;
-	cout<<e.str() << "\n" <<  a.str() ;
-	
-	return 0 ;
+int main() {
+    BigReal x("444.11111"), y("33333.22"), z;
+    z = x + y;
+    return 0;
 }
