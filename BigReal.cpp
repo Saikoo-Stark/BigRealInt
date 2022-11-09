@@ -120,6 +120,11 @@ BigReal & BigReal::operator=(BigReal &&other){
     return *this;
 }
 
+bool BigReal ::operator==(BigReal br)
+{
+    return (this->dec == br.dec && this->frac == br.frac && this->sign_ == br.sign_);
+}
+
 BigReal BigReal::operator+(BigReal &other)
 {
     BigReal result(".");
@@ -166,7 +171,7 @@ BigReal BigReal::operator+(BigReal &other)
     if(biggerNum == *this)
         smallerNum = other;
     else
-        smallerNum == *this;
+        smallerNum = *this;
 
     if(this->sign_ == other.sign_)
     {
@@ -205,7 +210,6 @@ BigReal BigReal::operator+(BigReal &other)
                 }
             }
         }
-
         for (int i = 0; i < this->dec.size(); ++i) {
             if ((biggerNum.dec[i] - '0') - (smallerNum.dec[i] - '0') >= 0)
             {
