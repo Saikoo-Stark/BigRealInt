@@ -180,7 +180,7 @@ BigReal BigReal::operator+(BigReal &other)
             result.frac = to_string(((this->frac[i] - '0') + (other.frac[i] - '0') + remainder) % 10) + result.frac;
             remainder = ((this->frac[i] - '0') + (other.frac[i] - '0') + remainder) / 10;
         }
-        for (int i = 0; i < this->dec.size(); ++i) {
+        for (int i = this->dec.size() - 1; i >= 0; --i) {
             result.dec = to_string(((this->dec[i] - '0') + (other.dec[i] - '0') + remainder) % 10) + result.dec;
             remainder = ((this->dec[i] - '0') + (other.dec[i] - '0') + remainder) / 10;
         }
@@ -210,7 +210,7 @@ BigReal BigReal::operator+(BigReal &other)
                 }
             }
         }
-        for (int i = 0; i < this->dec.size(); ++i) {
+        for (int i = this->dec.size() - 1; i >= 0; --i) {
             if ((biggerNum.dec[i] - '0') - (smallerNum.dec[i] - '0') >= 0)
             {
                 result.dec = to_string((biggerNum.dec[i] - '0') - (smallerNum.dec[i] - '0')) + result.dec;
@@ -218,7 +218,7 @@ BigReal BigReal::operator+(BigReal &other)
             else
             {
                 result.dec = to_string((biggerNum.dec[i] - '0') - (smallerNum.dec[i] - '0') + 10) + result.dec;
-                for (int j = i; j < this->dec.size(); ++j) {
+                for (int j = i; j >= 0; --j) {
                     if(biggerNum.dec[j] - '0' > 0)
                     {
                         biggerNum.dec[j] = biggerNum.dec[j] - 1;
