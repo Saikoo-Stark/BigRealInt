@@ -120,9 +120,167 @@ BigReal & BigReal::operator=(BigReal &&other){
     return *this;
 }
 
+bool BigReal ::operator>(BigReal other)
+{
+    int decimalSize = max(this->dec.size(), other.dec.size());
+
+    for (int i = this->dec.size(); i < decimalSize; ++i) {
+        this->dec = '0' + this->dec;
+    }
+    for (int i = other.dec.size(); i < decimalSize; ++i) {
+        other.dec = '0' + other.dec;
+    }
+
+    int fractionSize = max(this->frac.size(), other.frac.size());
+
+    for (int i = this->frac.size(); i < fractionSize; ++i) {
+        this->frac += '0';
+    }
+    for (int i = other.frac.size(); i < fractionSize; ++i) {
+        other.frac += '0';
+    }
+
+    if(sign_ == other.sign_)
+    {
+        if(sign_ == '+')
+        {
+            if(dec > other.dec)
+            {
+                return true;
+            }
+            else if(dec == other.dec)
+            {
+                if(frac > other.frac)
+                    return true;
+                else
+                    return false;
+            }
+            else
+                return false;
+        }
+        else
+        {
+            if(dec > other.dec)
+            {
+                return false;
+            }
+            else if(dec == other.dec)
+            {
+                if(frac > other.frac)
+                    return false;
+                else
+                    return true;
+            }
+            else
+                return true;
+        }
+    }
+    else
+        return sign_ == '+';
+}
+
+bool BigReal ::operator<(BigReal other)
+{
+    int decimalSize = max(this->dec.size(), other.dec.size());
+
+    for (int i = this->dec.size(); i < decimalSize; ++i) {
+        this->dec = '0' + this->dec;
+    }
+    for (int i = other.dec.size(); i < decimalSize; ++i) {
+        other.dec = '0' + other.dec;
+    }
+
+    int fractionSize = max(this->frac.size(), other.frac.size());
+
+    for (int i = this->frac.size(); i < fractionSize; ++i) {
+        this->frac += '0';
+    }
+    for (int i = other.frac.size(); i < fractionSize; ++i) {
+        other.frac += '0';
+    }
+
+    if(sign_ == other.sign_)
+    {
+        if(sign_ == '+')
+        {
+            if(dec > other.dec)
+            {
+                return false;
+            }
+            else if(dec == other.dec)
+            {
+                if(frac > other.frac)
+                    return false;
+                else
+                    return true;
+            }
+            else
+                return true;
+        }
+        else
+        {
+            if(dec > other.dec)
+            {
+                return true;
+            }
+            else if(dec == other.dec)
+            {
+                if(frac > other.frac)
+                    return true;
+                else
+                    return false;
+            }
+            else
+                return false;
+        }
+    }
+    else
+        return sign_ == '-';
+}
+
 bool BigReal ::operator==(BigReal br)
 {
     return (this->dec == br.dec && this->frac == br.frac && this->sign_ == br.sign_);
+}
+
+istream& operator>> (istream& input, BigReal& num)
+{
+    string realNumber;
+    input >> realNumber;
+    if(!num.isValid(realNumber)){
+        cerr<< realNumber << " is invalid number\n";
+        exit(0);
+    }
+
+    auto beg = realNumber.begin();
+
+    if(realNumber[0] == '-'){
+        num.sign_= '-';
+        beg++;
+    }
+
+    auto dot = find(beg  , realNumber.end() , '.');
+
+    if(dot != realNumber.end()){
+
+        int start = beg-realNumber.begin();
+        int doted = (dot-beg);
+        num.dec = realNumber.substr(start , doted);
+        num.frac = realNumber.substr(doted+start+1 , start-doted);
+    }
+    else{
+        num.dec = realNumber;
+        num.frac = "0";
+    }
+    return input;
+}
+
+ostream & operator<< (ostream& output, BigReal& num)
+{
+    if(num.sign_ == '-')
+        output << num.sign_;
+    output << num.dec << '.' << num.frac;
+    return output;
 }
 
 BigReal BigReal::operator+(BigReal &other)

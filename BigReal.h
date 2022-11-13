@@ -35,8 +35,9 @@ public:
     bool operator==(BigReal anotherReal);
     int size();
     int sign();
-    friend ostream &operator<<(ostream &out, BigReal num);
-    friend istream &operator>>(istream &out, BigReal num);
+
+    friend std::ostream& operator<<(std::ostream& output, BigReal& num);
+    friend std::istream& operator>>(std::istream& input, BigReal& num);
 };
 
 #endif
