@@ -2,6 +2,7 @@
 #define BIG_REAL_HPP
 
 #include <string>
+#include <regex>
 #include "BigDecimalIntClass.h"
 using namespace std;
 
@@ -11,6 +12,7 @@ private:
     string dec ;
     string frac ;
     char sign_ = '+' ;
+    void zeroRemover(BigReal &num);
     bool isValid(string num);
     //void strip(string num)
 public:
@@ -35,9 +37,8 @@ public:
     bool operator==(BigReal anotherReal);
     int size();
     int sign();
-
-    friend std::ostream& operator<<(std::ostream& output, BigReal& num);
-    friend std::istream& operator>>(std::istream& input, BigReal& num);
+    friend ostream &operator<<(ostream &out, BigReal num);
+    friend istream &operator>>(istream &out, BigReal num);
 };
 
 #endif
