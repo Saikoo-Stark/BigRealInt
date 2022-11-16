@@ -1,4 +1,4 @@
-#include "BigReal.h"
+#include "BigReal.hpp"
 #include "BigDecimalIntClass.h"
 #include<iostream>
 #include<algorithm>
@@ -79,13 +79,14 @@ BigReal::BigReal(string realNumber){
         dec = realNumber;
         frac = "0";
     }
-    //cout<< "good number = " << realNumber
-//	<< "\nsign = " << sign_
-//	 <<"\ndec = " << dec
-//	 << "\nfrac = " <<  frac
-//	 << "\n" ;
+    
 }
 
+
+BigReal::BigReal(double num){
+	this->setNumber(to_string(num));
+	zeroRemover(*this);
+}
 
 BigReal::BigReal(BigDecimalInt bigInteger){
     if(bigInteger.sign())
@@ -116,6 +117,35 @@ BigReal & BigReal::operator=(BigReal &other){
     this->sign_ = other.sign_;
     this->dec = other.dec;
     this->frac = other.frac;
+    return *this;
+}
+
+BigReal BigReal::setNumber(string realNumber){
+    if(!isValid(realNumber)){
+        cerr<< realNumber << " is invalid number\n";
+        exit(0);
+    }
+
+    auto beg = realNumber.begin();
+
+    if(realNumber[0] == '-'){
+        sign_= '-';
+        beg++;
+    }
+
+    auto dot = find(beg  , realNumber.end() , '.');
+
+    if(dot != realNumber.end()){
+
+        int start = beg-realNumber.begin();
+        int doted = (dot-beg);
+        dec = realNumber.substr(start , doted);
+        frac = realNumber.substr(doted+start+1 , start-doted);
+    }
+    else{
+        dec = realNumber;
+        frac = "0";
+    }
     return *this;
 }
 
@@ -167,19 +197,19 @@ bool BigReal ::operator>(BigReal other)
         }
         else
         {
-            if(dec > other.dec)
+            if(dec < other.dec)
             {
-                return false;
+                return true;
             }
             else if(dec == other.dec)
             {
-                if(frac > other.frac)
-                    return false;
-                else
+                if(frac < other.frac)
                     return true;
+                else
+                    return false;
             }
             else
-                return true;
+                return false;
         }
     }
     else
@@ -250,7 +280,7 @@ bool BigReal ::operator==(BigReal br)
     return (this->dec == br.dec && this->frac == br.frac && this->sign_ == br.sign_);
 }
 
-istream& operator>> (istream& input, BigReal& num)
+istream &operator>>(istream &input, BigReal num)
 {
     string realNumber;
     input >> realNumber;
@@ -282,15 +312,18 @@ istream& operator>> (istream& input, BigReal& num)
     return input;
 }
 
-ostream & operator<< (ostream& output, BigReal& num)
+ostream &operator<<(ostream &output, BigReal num)
 {
     if(num.sign_ == '-')
         output << num.sign_;
-    output << num.dec << '.' << num.frac;
+    output << num.dec ;
+   
+    if(num.frac != "0") 
+    output << '.' << num.frac;
     return output;
 }
 
-BigReal BigReal::operator+(BigReal &other)
+BigReal BigReal::operator+(BigReal other)
 {
     BigReal result;
 	result.dec = "";
@@ -406,12 +439,17 @@ BigReal BigReal::operator+(BigReal &other)
     }
     zeroRemover(*this);
     zeroRemover(other);
+    zeroRemover(result);
+    
+    if(result.dec == result.frac && result.dec == "0")
+    result.sign_ = '+';
+    
     return result;
 }
 
 
 
-BigReal BigReal::operator-(BigReal &other)
+BigReal BigReal::operator-(BigReal other)
 {
     BigReal result;
 	result.dec = "";
@@ -537,5 +575,10 @@ BigReal BigReal::operator-(BigReal &other)
     
     zeroRemover(*this);
     zeroRemover(other);
+    zeroRemover(result);
+    
+    if(result.dec == result.frac && result.dec == "0")
+    result.sign_ = '+';
+    
     return result;
 }
